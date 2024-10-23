@@ -81,3 +81,10 @@ html {
       padding-bottom: 1rem;
     }
   }
+
+  .thumbnail img {
+    max-width: 320px;
+    max-height: 320px;
+    object-fit: cover; /* Ensures the image fits within the space without distortion */
+    margin-bottom: 10px; /* Add some space below the image */
+  }
