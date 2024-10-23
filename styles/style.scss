@@ -1,0 +1,83 @@
+html {
+    font-size: 62.5%; // 1rem = 10px for easier rem calculation
+    box-sizing: border-box;
+  }
+  
+  *, *::before, *::after {
+    box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+  }
+  
+  header {
+    background-color: #333;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  nav ul {
+    display: flex;
+    justify-content: center;
+  
+    li {
+      margin: 0 1rem;
+  
+      a {
+        color: white;
+      }
+    }
+  }
+  
+  main {
+    margin: 2rem;
+  }
+  
+  #new-post, #blog-posts {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.8rem;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    color: #333;
+  }
+  
+  #blogForm {
+    input, textarea {
+      width: 100%;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.4rem;
+    }
+  
+    button {
+      padding: 1rem 2rem;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 0.4rem;
+      cursor: pointer;
+  
+      &:hover {
+        background-color: #218838;
+      }
+    }
+  }
+  
+  #posts {
+    .post {
+      border-bottom: 0.1rem solid #ccc;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+    }
+  }
