@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Blog</title>
+  <title>DJ Product Store</title>
   <link rel="stylesheet" href="../styles/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked@4.0.10/marked.min.js"></script> <!-- For Markdown rendering -->
 </head>
 <body>
 
   <header>
-    <h1>My Blog</h1>
+    <h1>DJ Product Store</h1>
   </header>
 
   <main>
@@ -33,24 +34,40 @@
 
     <!-- New Post section (hidden initially, only visible to authenticated users) -->
     <section id="new-post" style="display:none;">
-      <h2>Create a New Blog Post</h2>
+      <h2>Create a New Product Post</h2>
       <form id="blogForm">
-        <input type="text" id="title" placeholder="Title" required>
-        <textarea id="content" placeholder="Write your blog post here..." required></textarea>
+        <input type="text" id="title" placeholder="Product Title" required>
+        <textarea id="content" placeholder="Write your product description in Markdown..." required></textarea>
+        
+        <!-- Dropdown for categories -->
+        <select id="category" required>
+          <option value="Sample Packs">Sample Packs</option>
+          <option value="Mixes">Mixes</option>
+          <option value="Remixes">Remixes</option>
+        </select>
+        
         <button type="submit">Post</button>
       </form>
       <button id="logout">Log Out</button>
     </section>
 
+    <!-- Filters section -->
+    <section id="filters">
+      <h2>Filter by Category</h2>
+      <button data-filter="all">All</button>
+      <button data-filter="Sample Packs">Sample Packs</button>
+      <button data-filter="Mixes">Mixes</button>
+      <button data-filter="Remixes">Remixes</button>
+    </section>
+
     <!-- Blog Posts section -->
     <section id="blog-posts">
-      <h2>Blog Posts</h2>
+      <h2>Products</h2>
       <div id="posts"></div>
     </section>
 
     <!-- Firebase JS script -->
     <script type="module" src="../js/script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked@4.0.10/marked.min.js"></script>
 
 </body>
 </html>

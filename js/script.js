@@ -72,16 +72,18 @@ logoutButton.addEventListener('click', async () => {
   }
 });
 
-// Posting a New Blog (Markdown support added)
+// Posting a New Blog (with Category)
 blogForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const title = document.getElementById('title').value;
   const content = document.getElementById('content').value; // This is the Markdown content
+  const category = document.getElementById('category').value; // Category selected from dropdown
 
   try {
     await addDoc(collection(db, 'posts'), {
       title: title,
       content: content, // Save the raw Markdown
+      category: category, // Store category
       timestamp: new Date()  // Add timestamp
     });
     alert('Blog post added');
@@ -92,28 +94,45 @@ blogForm.addEventListener('submit', async (e) => {
   }
 });
 
-// Fetch and Display Blog Posts (Markdown converted to HTML)
-async function loadPosts() {
+// Fetch and Display Blog Posts (with Category Filtering)
+async function loadPosts(categoryFilter = 'all') {
   postsDiv.innerHTML = ''; // Clear previous posts
   try {
     const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       const post = doc.data();
-      const postElement = document.createElement('div');
-      postElement.classList.add('post');
       
-      // Convert Markdown to HTML using marked.parse() for the latest version
-      const postContent = marked.parse(post.content);
+      // If a category filter is applied, check if the post matches the category
+      if (categoryFilter === 'all' || post.category === categoryFilter) {
+        const postElement = document.createElement('div');
+        postElement.classList.add('post');
+        
+        // Convert Markdown to HTML using marked.parse() for the latest version
+        const postContent = marked.parse(post.content);
 
-      // Render the post with converted HTML content
-      postElement.innerHTML = `<h3>${post.title}</h3><div>${postContent}</div>`;
-      postsDiv.appendChild(postElement);
+        // Render the post with category, title, and converted HTML content
+        postElement.innerHTML = `
+          <h3>${post.title}</h3>
+          <p><strong>Category:</strong> ${post.category}</p>
+          <div>${postContent}</div>
+        `;
+        postsDiv.appendChild(postElement);
+      }
     });
   } catch (error) {
     alert('Error fetching posts: ' + error.message);
   }
 }
 
-// Load posts on page load
-window.onload = loadPosts;
+// Event listeners for filtering by category
+const filterButtons = document.querySelectorAll('#filters button');
+filterButtons.forEach(button => {
+  button.addEventListener('click', (e) => {
+    const filter = e.target.getAttribute('data-filter');
+    loadPosts(filter); // Load posts based on selected category
+  });
+});
+
+// Load all posts on page load
+window.onload = () => loadPosts('all'); // Default to showing all posts
