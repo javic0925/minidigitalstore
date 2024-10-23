@@ -1,5 +1,6 @@
 // Import Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 // Firebase configuration
@@ -15,47 +16,63 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 
-// DOM Elements for different category sections
-const samplePacksDiv = document.getElementById('sample-packs-thumbnails');
-const mixesDiv = document.getElementById('mixes-thumbnails');
-const remixesDiv = document.getElementById('remixes-thumbnails');
+// DOM Elements
+const loginForm = document.getElementById('loginForm');
+const signupForm = document.getElementById('signupForm');
+const newPostSection = document.getElementById('new-post');
+const authSection = document.getElementById('auth-section');
+const logoutButton = document.getElementById('logout');
 
-// Fetch and Display Products in Their Respective Sections
-async function loadProductsByCategory() {
-  try {
-    const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      const post = doc.data();
-
-      const postElement = document.createElement('div');
-      postElement.classList.add('thumbnail');
-
-      // Extract a short snippet from the post content
-      const postSnippet = post.content.split(' ').slice(0, 20).join(' ') + '...'; // First 20 words as snippet
-
-      // Generate the thumbnail with image, title, and snippet, linking to the full post
-      postElement.innerHTML = `
-        <img src="${post.thumbnail || 'default-thumbnail.jpg'}" alt="${post.title}">
-        <h3><a href="product.html?id=${doc.id}">${post.title}</a></h3>
-        <p>${postSnippet}</p>
-      `;
-
-      // Append the product to the correct section based on its category
-      if (post.category === 'Sample Packs') {
-        samplePacksDiv.appendChild(postElement);
-      } else if (post.category === 'Mixes') {
-        mixesDiv.appendChild(postElement);
-      } else if (post.category === 'Remixes') {
-        remixesDiv.appendChild(postElement);
-      }
-    });
-  } catch (error) {
-    alert('Error fetching products: ' + error.message);
+// Toggle Forms Based on Auth State
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is logged in, show new post section
+    authSection.style.display = 'none';
+    newPostSection.style.display = 'block';
+  } else {
+    // No user is logged in, show login/signup forms
+    authSection.style.display = 'block';
+    newPostSection.style.display = 'none';
   }
-}
+});
 
-// Load products on page load
-window.onload = loadProductsByCategory;
+// Sign Up (Register) with Email/Password
+signupForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('signupEmail').value;
+  const password = document.getElementById('signupPassword').value;
+
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+    alert('User signed up successfully');
+  } catch (error) {
+    alert('Sign up failed: ' + error.message);
+  }
+});
+
+// Log In with Email/Password
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    alert('User logged in successfully');
+  } catch (error) {
+    alert('Login failed: ' + error.message);
+  }
+});
+
+// Log Out
+logoutButton.addEventListener('click', async () => {
+  try {
+    await signOut(auth);
+    alert('User logged out');
+  } catch (error) {
+    alert('Error logging out: ' + error.message);
+  }
+});

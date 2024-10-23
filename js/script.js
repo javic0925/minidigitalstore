@@ -1,7 +1,7 @@
 // Import Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -22,11 +22,22 @@ const db = getFirestore(app);
 // DOM Elements
 const loginForm = document.getElementById('loginForm');
 const signupForm = document.getElementById('signupForm');
-const blogForm = document.getElementById('blogForm');
-const authSection = document.getElementById('auth-section');
 const newPostSection = document.getElementById('new-post');
-const postsDiv = document.getElementById('posts');
+const authSection = document.getElementById('auth-section');
 const logoutButton = document.getElementById('logout');
+
+// Toggle Forms Based on Auth State
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is logged in, show new post section
+    authSection.style.display = 'none';
+    newPostSection.style.display = 'block';
+  } else {
+    // No user is logged in, show login/signup forms
+    authSection.style.display = 'block';
+    newPostSection.style.display = 'none';
+  }
+});
 
 // Sign Up (Register) with Email/Password
 signupForm.addEventListener('submit', async (e) => {
@@ -35,10 +46,8 @@ signupForm.addEventListener('submit', async (e) => {
   const password = document.getElementById('signupPassword').value;
 
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    await createUserWithEmailAndPassword(auth, email, password);
     alert('User signed up successfully');
-    authSection.style.display = 'none';
-    newPostSection.style.display = 'block'; // Show blog post form for authenticated user
   } catch (error) {
     alert('Sign up failed: ' + error.message);
   }
@@ -51,10 +60,8 @@ loginForm.addEventListener('submit', async (e) => {
   const password = document.getElementById('loginPassword').value;
 
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    await signInWithEmailAndPassword(auth, email, password);
     alert('User logged in successfully');
-    authSection.style.display = 'none'; // Hide login form
-    newPostSection.style.display = 'block'; // Show blog post form for authenticated user
   } catch (error) {
     alert('Login failed: ' + error.message);
   }
@@ -65,74 +72,7 @@ logoutButton.addEventListener('click', async () => {
   try {
     await signOut(auth);
     alert('User logged out');
-    authSection.style.display = 'block'; // Show login form
-    newPostSection.style.display = 'none'; // Hide blog post form
   } catch (error) {
     alert('Error logging out: ' + error.message);
   }
 });
-
-// Posting a New Blog (with Category)
-blogForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const title = document.getElementById('title').value;
-  const content = document.getElementById('content').value; // This is the Markdown content
-  const category = document.getElementById('category').value; // Category selected from dropdown
-
-  try {
-    await addDoc(collection(db, 'posts'), {
-      title: title,
-      content: content, // Save the raw Markdown
-      category: category, // Store category
-      timestamp: new Date()  // Add timestamp
-    });
-    alert('Blog post added');
-    blogForm.reset();
-    loadPosts(); // Refresh blog posts after submission
-  } catch (error) {
-    alert('Error posting blog: ' + error.message);
-  }
-});
-
-// Fetch and Display Blog Posts (with Category Filtering)
-async function loadPosts(categoryFilter = 'all') {
-  postsDiv.innerHTML = ''; // Clear previous posts
-  try {
-    const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      const post = doc.data();
-      
-      // If a category filter is applied, check if the post matches the category
-      if (categoryFilter === 'all' || post.category === categoryFilter) {
-        const postElement = document.createElement('div');
-        postElement.classList.add('post');
-        
-        // Convert Markdown to HTML using marked.parse() for the latest version
-        const postContent = marked.parse(post.content);
-
-        // Render the post with category, title, and converted HTML content
-        postElement.innerHTML = `
-          <h3>${post.title}</h3>
-          <p><strong>Category:</strong> ${post.category}</p>
-          <div>${postContent}</div>
-        `;
-        postsDiv.appendChild(postElement);
-      }
-    });
-  } catch (error) {
-    alert('Error fetching posts: ' + error.message);
-  }
-}
-
-// Event listeners for filtering by category
-const filterButtons = document.querySelectorAll('#filters button');
-filterButtons.forEach(button => {
-  button.addEventListener('click', (e) => {
-    const filter = e.target.getAttribute('data-filter');
-    loadPosts(filter); // Load posts based on selected category
-  });
-});
-
-// Load all posts on page load
-window.onload = () => loadPosts('all'); // Default to showing all posts
