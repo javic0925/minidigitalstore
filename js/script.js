@@ -28,10 +28,6 @@ const newPostSection = document.getElementById('new-post');
 const postsDiv = document.getElementById('posts');
 const logoutButton = document.getElementById('logout');
 
-// Include the marked.js library
-// You need to include this script in your HTML file:
-// <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
 // Sign Up (Register) with Email/Password
 signupForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -107,8 +103,8 @@ async function loadPosts() {
       const postElement = document.createElement('div');
       postElement.classList.add('post');
       
-      // Convert Markdown to HTML using marked.js
-      const postContent = marked(post.content);
+      // Convert Markdown to HTML using marked.parse() for the latest version
+      const postContent = marked.parse(post.content);
 
       // Render the post with converted HTML content
       postElement.innerHTML = `<h3>${post.title}</h3><div>${postContent}</div>`;
