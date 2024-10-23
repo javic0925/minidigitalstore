@@ -32,13 +32,15 @@ async function loadProduct() {
 
     if (docSnap.exists()) {
       const post = docSnap.data();
-      const postContent = marked.parse(post.content);
+      const postContent = marked.parse(post.content); // Convert Markdown to HTML
+
+      // Only show the image if the image URL exists
+      const postImage = post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title}" width="400">` : '';
 
       productDiv.innerHTML = `
         <h2>${post.title}</h2>
-        <p><strong>Category:</strong> ${post.category
-
-}</p>
+        ${postImage} <!-- Display the image -->
+        <p><strong>Category:</strong> ${post.category}</p>
         <div>${postContent}</div>
       `;
     } else {
