@@ -32,12 +32,13 @@ async function loadProduct() {
 
     if (docSnap.exists()) {
       const post = docSnap.data();
-      
-      // Render the full product post
       const postContent = marked.parse(post.content);
+
       productDiv.innerHTML = `
         <h2>${post.title}</h2>
-        <img src="${post.thumbnail || 'default-thumbnail.jpg'}" alt="${post.title}" width="400">
+        <p><strong>Category:</strong> ${post.category
+
+}</p>
         <div>${postContent}</div>
       `;
     } else {
