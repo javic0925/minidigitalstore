@@ -26,7 +26,7 @@ const newPostSection = document.getElementById('new-post');
 const authSection = document.getElementById('auth-section');
 const logoutButton = document.getElementById('logout');
 const blogForm = document.getElementById('blogForm');
-const postsDiv = document.getElementById('posts');
+const postsContainer = document.getElementById('posts-container');
 
 // Toggle Forms Based on Auth State
 onAuthStateChanged(auth, (user) => {
@@ -39,6 +39,7 @@ onAuthStateChanged(auth, (user) => {
     // No user is logged in, show login/signup forms
     authSection.style.display = 'block';
     newPostSection.style.display = 'none';
+    loadPosts(); // Load posts even if the user is not logged in
   }
 });
 
@@ -76,7 +77,8 @@ logoutButton.addEventListener('click', async () => {
   try {
     await signOut(auth);
     alert('User logged out');
-    postsDiv.innerHTML = ''; // Clear posts after logout
+    postsContainer.innerHTML = ''; // Clear posts after logout
+    loadPosts(); // Reload posts after logout
   } catch (error) {
     alert('Error logging out: ' + error.message);
   }
@@ -106,36 +108,35 @@ blogForm.addEventListener('submit', async (e) => {
 
 // Fetch and Display Blog Posts
 async function loadPosts() {
-  postsDiv.innerHTML = ''; // Clear previous posts
+  postsContainer.innerHTML = ''; // Clear previous posts
   try {
     const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       const post = doc.data();
-      const postElement = document.createElement('div');
-      postElement.classList.add('post');
-      
-      // Convert Markdown to HTML using marked.parse() for the latest version
+
+      // Create a new section for each post
+      const postSection = document.createElement('section');
+      postSection.classList.add('post-section');
+
+      // Convert Markdown to HTML using marked.parse()
       const postContent = marked.parse(post.content);
 
       // Render the post with category, title, and converted HTML content
-      postElement.innerHTML = `
-        <h3>${post.title}</h3>
+      postSection.innerHTML = `
+        <h2>${post.title}</h2>
         <p><strong>Category:</strong> ${post.category}</p>
         <div>${postContent}</div>
+        <hr>
       `;
-      postsDiv.appendChild(postElement);
+
+      // Append the post section to the posts container
+      postsContainer.appendChild(postSection);
     });
   } catch (error) {
     alert('Error fetching posts: ' + error.message);
   }
 }
 
-// Load posts on page load if user is logged in
-window.onload = () => {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      loadPosts();
-    }
-  });
-};
+// Load posts on page load
+window.onload = loadPosts;

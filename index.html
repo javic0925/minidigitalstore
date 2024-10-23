@@ -14,7 +14,7 @@
   </header>
 
   <main>
-    <!-- Sign Up Form -->
+    <!-- Login/Signup Forms -->
     <section id="auth-section">
       <h2>Sign Up</h2>
       <form id="signupForm">
@@ -23,7 +23,6 @@
         <button type="submit">Sign Up</button>
       </form>
 
-      <!-- Log In Form -->
       <h2>Log In</h2>
       <form id="loginForm">
         <input type="email" id="loginEmail" placeholder="Email" required>
@@ -32,24 +31,26 @@
       </form>
     </section>
 
-    <!-- New Post section (hidden initially, only visible to authenticated users) -->
+    <!-- New Post Form (Only visible when logged in) -->
     <section id="new-post" style="display:none;">
       <h2>Create a New Product Post</h2>
       <form id="blogForm">
         <input type="text" id="title" placeholder="Product Title" required>
         <textarea id="content" placeholder="Write your product description in Markdown..." required></textarea>
-        
-        <!-- Dropdown for categories -->
         <select id="category" required>
           <option value="Sample Packs">Sample Packs</option>
           <option value="Mixes">Mixes</option>
           <option value="Remixes">Remixes</option>
         </select>
-        
         <button type="submit">Post</button>
       </form>
       <button id="logout">Log Out</button>
     </section>
+
+    <!-- Blog Posts will be displayed here -->
+    <div id="posts-container">
+      <!-- Posts will be dynamically added here -->
+    </div>
 
     <!-- Firebase JS script -->
     <script type="module" src="../js/index.js"></script>
