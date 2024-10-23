@@ -1,7 +1,7 @@
 // Import Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -25,6 +25,8 @@ const signupForm = document.getElementById('signupForm');
 const newPostSection = document.getElementById('new-post');
 const authSection = document.getElementById('auth-section');
 const logoutButton = document.getElementById('logout');
+const blogForm = document.getElementById('blogForm');
+const postsDiv = document.getElementById('posts');
 
 // Toggle Forms Based on Auth State
 onAuthStateChanged(auth, (user) => {
@@ -32,6 +34,7 @@ onAuthStateChanged(auth, (user) => {
     // User is logged in, show new post section
     authSection.style.display = 'none';
     newPostSection.style.display = 'block';
+    loadPosts(); // Load posts once logged in
   } else {
     // No user is logged in, show login/signup forms
     authSection.style.display = 'block';
@@ -62,6 +65,7 @@ loginForm.addEventListener('submit', async (e) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
     alert('User logged in successfully');
+    loadPosts(); // Load posts after login
   } catch (error) {
     alert('Login failed: ' + error.message);
   }
@@ -72,7 +76,66 @@ logoutButton.addEventListener('click', async () => {
   try {
     await signOut(auth);
     alert('User logged out');
+    postsDiv.innerHTML = ''; // Clear posts after logout
   } catch (error) {
     alert('Error logging out: ' + error.message);
   }
 });
+
+// Posting a New Blog Post
+blogForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const title = document.getElementById('title').value;
+  const content = document.getElementById('content').value; // This is the Markdown content
+  const category = document.getElementById('category').value; // Category selected from dropdown
+
+  try {
+    await addDoc(collection(db, 'posts'), {
+      title: title,
+      content: content, // Save the raw Markdown
+      category: category, // Store category
+      timestamp: new Date()  // Add timestamp
+    });
+    alert('Blog post added');
+    blogForm.reset();
+    loadPosts(); // Refresh blog posts after submission
+  } catch (error) {
+    alert('Error posting blog: ' + error.message);
+  }
+});
+
+// Fetch and Display Blog Posts
+async function loadPosts() {
+  postsDiv.innerHTML = ''; // Clear previous posts
+  try {
+    const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      const post = doc.data();
+      const postElement = document.createElement('div');
+      postElement.classList.add('post');
+      
+      // Convert Markdown to HTML using marked.parse() for the latest version
+      const postContent = marked.parse(post.content);
+
+      // Render the post with category, title, and converted HTML content
+      postElement.innerHTML = `
+        <h3>${post.title}</h3>
+        <p><strong>Category:</strong> ${post.category}</p>
+        <div>${postContent}</div>
+      `;
+      postsDiv.appendChild(postElement);
+    });
+  } catch (error) {
+    alert('Error fetching posts: ' + error.message);
+  }
+}
+
+// Load posts on page load if user is logged in
+window.onload = () => {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      loadPosts();
+    }
+  });
+};
