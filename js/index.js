@@ -1,7 +1,7 @@
 // Import Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -66,6 +66,38 @@ logoutButton.addEventListener('click', async () => {
     loadPosts(); // Reload posts after logout
   } catch (error) {
     alert('Error logging out: ' + error.message);
+  }
+});
+
+// Posting a New Blog Post with Image URL
+const blogForm = document.getElementById('blogForm');
+blogForm.addEventListener('submit', async (e) => {
+  e.preventDefault(); // Prevent form from refreshing the page
+
+  const title = document.getElementById('title').value;
+  const content = document.getElementById('content').value;
+  const imageUrl = document.getElementById('imageUrl').value; // Get the image URL
+  const category = document.getElementById('category').value;
+
+  try {
+    await addDoc(collection(db, 'posts'), {
+      title: title,
+      content: content, // Save the raw Markdown
+      imageUrl: imageUrl, // Save the image URL
+      category: category,
+      timestamp: new Date()
+    });
+
+    // Show success message
+    alert('Blog post added successfully!');
+
+    // Reset the form
+    blogForm.reset();
+
+    // Load posts after submission to update the post list
+    loadPosts();
+  } catch (error) {
+    alert('Error posting blog: ' + error.message);
   }
 });
 
