@@ -20,13 +20,17 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // DOM Elements
-const loginForm = document.getElementById('loginForm');  // New login form for email/password
-const signupForm = document.getElementById('signupForm');  // Signup form for new users
+const loginForm = document.getElementById('loginForm');
+const signupForm = document.getElementById('signupForm');
 const blogForm = document.getElementById('blogForm');
 const authSection = document.getElementById('auth-section');
 const newPostSection = document.getElementById('new-post');
 const postsDiv = document.getElementById('posts');
-const logoutButton = document.getElementById('logout');  // Button to log out the user
+const logoutButton = document.getElementById('logout');
+
+// Include the marked.js library
+// You need to include this script in your HTML file:
+// <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 // Sign Up (Register) with Email/Password
 signupForm.addEventListener('submit', async (e) => {
@@ -72,16 +76,16 @@ logoutButton.addEventListener('click', async () => {
   }
 });
 
-// Posting a New Blog
+// Posting a New Blog (Markdown support added)
 blogForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const title = document.getElementById('title').value;
-  const content = document.getElementById('content').value;
+  const content = document.getElementById('content').value; // This is the Markdown content
 
   try {
     await addDoc(collection(db, 'posts'), {
       title: title,
-      content: content,
+      content: content, // Save the raw Markdown
       timestamp: new Date()  // Add timestamp
     });
     alert('Blog post added');
@@ -92,7 +96,7 @@ blogForm.addEventListener('submit', async (e) => {
   }
 });
 
-// Fetch and Display Blog Posts
+// Fetch and Display Blog Posts (Markdown converted to HTML)
 async function loadPosts() {
   postsDiv.innerHTML = ''; // Clear previous posts
   try {
@@ -102,7 +106,12 @@ async function loadPosts() {
       const post = doc.data();
       const postElement = document.createElement('div');
       postElement.classList.add('post');
-      postElement.innerHTML = `<h3>${post.title}</h3><p>${post.content}</p>`;
+      
+      // Convert Markdown to HTML using marked.js
+      const postContent = marked(post.content);
+
+      // Render the post with converted HTML content
+      postElement.innerHTML = `<h3>${post.title}</h3><div>${postContent}</div>`;
       postsDiv.appendChild(postElement);
     });
   } catch (error) {
