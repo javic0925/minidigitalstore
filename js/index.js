@@ -118,8 +118,8 @@ async function loadPosts() {
       const post = doc.data();
       const postElement = document.createElement('div');
       postElement.classList.add('post');
-      const postSnippet = post.content.split(' ').slice(0, 20).join(' ') + '...';
-      const postImage = post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title}" width="300">` : '';
+      const postSnippet = post.content.split(' ').slice(0, 20).join(' ');
+      const postImage = post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title}">` : '';
 
       postElement.innerHTML = `
         ${postImage}

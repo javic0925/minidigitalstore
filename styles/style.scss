@@ -7,26 +7,32 @@ html{
     size: 62.5%;
 
 }
-
 body{
-    overflow: hidden;
+  font-family: 'Courier New', Courier, monospace;
+  overflow: hidden;
 }
 
-#nav{
+header{
     width: 100vw;
-    height: auto;
+    height: 10vh;
+    background-color: #232E33;
+
+}
+#nav{
+    margin: auto;
+    width: 90%;
+    height: 100%;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-around;
     align-items: center;
-    background-color: rgb(12, 12, 12);
-    padding: 1rem 2rem 1rem 2rem;
 ul{
-    width: 50%;
+    width: 30%;
     height: 100%;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-around;
     align-items: center;
     list-style: none;
@@ -75,6 +81,59 @@ form {
   
   #new-post {
     margin-top: 30px;
+  }
+
+  #sample-packs-section, #mixes-section, #remixes-section{
+    width: 100vw;
+    height: 32vh;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    h2{
+      width: 100%;
+      height: 10%;
+      text-align: center;
+    }
+  }
+
+  #mixes{
+    width: 100%;
+    height: 90%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow: auto;
+
+  }
+
+  .post{
+    width: 250px;
+    aspect-ratio: 1/1;
+    margin: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+    img{
+        width: 80%;
+        aspect-ratio:1/1;
+        object-fit: cover;
+      }
+    h3{
+      width: 70%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      a{
+        text-decoration: none;
+        color: #232E33;
+      }
+    }
   }
   
   /* Thumbnail for posts */
