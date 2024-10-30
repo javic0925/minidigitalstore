@@ -45,7 +45,10 @@ ul{
     height: 60%;
     object-fit: contain;
 }
-
+main{
+  width: 100vw;
+  height: auto;
+}
 
 /* Basic styling for the form */
 form {
@@ -81,7 +84,16 @@ form {
     right: 1rem;
   }
   
-  
+  #hero{
+    width: 100vw;
+    height: 30vh;
+    overflow: hidden;
+    img{
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+  }
   #new-post {
     margin-top: 30px;
   }
@@ -94,6 +106,7 @@ form {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    margin-top: 2.5rem;
     h2{
       width: 100%;
       height: 10%;
@@ -101,7 +114,7 @@ form {
     }
   }
 
-  #mixes{
+  #sample-packs, #mixes, #remixes{
     width: 100%;
     height: 90%;
     display: flex;
