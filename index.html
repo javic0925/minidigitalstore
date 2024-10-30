@@ -8,7 +8,6 @@
   <script src="https://cdn.jsdelivr.net/npm/marked@4.0.10/marked.min.js"></script> <!-- For Markdown rendering -->
 </head>
 <body>
-
   <header>
     <div id="nav">
       <!--<ul>
@@ -17,7 +16,7 @@
         <li>Sample Packs</li>
       </ul>-->
       <img class="Logo" src="https://djjavi.app/root/uploads/2021/04/JaviLo.png" alt="DJ Javi Logo">
-      <button id="loginButton">Log In</button> <!-- Button to open the login modal -->
+      <button id="loginButton"><P>Log In</P></button> <!-- Button to open the login modal -->
     </div>
   </header>
 
@@ -27,10 +26,9 @@
       <h2>Create a New Product Post</h2>
       <form id="blogForm">
         <input type="text" id="title" placeholder="Product Title" required>
-        <textarea id="content" placeholder="Write your product description in Markdown..." required></textarea>
-        
-        <!-- Input field for image URL -->
         <input type="url" id="imageUrl" placeholder="Image URL for product" required>
+        <input type="text" id="price" placeholder="Product Price" required>
+        <textarea id="content" placeholder="Write your product description in Markdown..." required></textarea>
         
         <select id="category" required>
           <option value="Sample Packs">Sample Packs</option>
@@ -42,7 +40,7 @@
       <button id="logout">Log Out</button>
     </section>
     <section id="hero">
-      <img src="https://images.unsplash.com/photo-1528722828814-77b9b83aafb2?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Z2FsYXh5fGVufDB8fDB8fHww" alt="">
+      
     </section>
     <!-- Sections for each category -->
     <section id="sample-packs-section">
@@ -64,7 +62,6 @@
     <div id="loginModal" class="modal">
       <div class="modal-content">
         <span class="close">&times;</span>
-        <h2>Log In</h2>
         <form id="loginForm">
           <input type="email" id="loginEmail" placeholder="Email" required>
           <input type="password" id="loginPassword" placeholder="Password" required>

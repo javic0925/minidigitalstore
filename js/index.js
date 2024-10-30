@@ -78,6 +78,7 @@ blogForm.addEventListener('submit', async (e) => {
   const content = document.getElementById('content').value;
   const imageUrl = document.getElementById('imageUrl').value; // Get the image URL
   const category = document.getElementById('category').value;
+  const price = document.getElementById('price').value;
 
   try {
     await addDoc(collection(db, 'posts'), {
@@ -85,6 +86,7 @@ blogForm.addEventListener('submit', async (e) => {
       content: content, // Save the raw Markdown
       imageUrl: imageUrl, // Save the image URL
       category: category,
+      price: price,
       timestamp: new Date()
     });
 
@@ -119,12 +121,13 @@ async function loadPosts() {
       const postElement = document.createElement('div');
       postElement.classList.add('post');
       const postSnippet = post.content.split(' ').slice(0, 20).join(' ');
+      const postPrice = post.price;
       const postImage = post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title}">` : '';
 
       postElement.innerHTML = `
         ${postImage}
         <h3><a href="product.html?id=${doc.id}">${post.title}</a></h3>
-        <p>${postSnippet}</p>
+        <p>${postPrice}</p>
       `;
 
       if (post.category === 'Sample Packs') {
