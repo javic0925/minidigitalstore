@@ -14,7 +14,7 @@ body {
 
 header {
   width: 100vw;
-  height: 10vh;
+  height: 64px;
   background-color: #232E33;
 }
 
@@ -25,7 +25,7 @@ header {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
 }
 #nav ul {
@@ -42,7 +42,7 @@ header {
 
 .Logo {
   width: auto;
-  height: 80%;
+  height: 60%;
   -o-object-fit: contain;
      object-fit: contain;
 }
@@ -76,6 +76,9 @@ button {
   color: rgb(0, 0, 0);
   border: none;
   cursor: pointer;
+  position: absolute;
+  top: 0.25rem;
+  right: 1rem;
 }
 
 #new-post {
