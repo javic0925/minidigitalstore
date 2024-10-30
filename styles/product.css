@@ -72,7 +72,7 @@ main {
   margin-bottom: 2rem;
 }
 #product img {
-  width: 70%;
+  width: 100%;
   aspect-ratio: 1/1;
 }
 #product p {
